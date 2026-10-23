@@ -1,26 +1,25 @@
-﻿
+﻿while (true)
+{
+    Console.WriteLine("Menu");
+    Console.WriteLine("Please select an option:");
+    Console.WriteLine("Option 1: Add Ticket");
+    Console.WriteLine("Option 2: Leave the program");
+    string? option = Console.ReadLine(); 
+    int.TryParse(option, out int choice );
 
-string title = ReadRequiredText("Please enter a ticket title");
-int numberOfUsers = ReadPositiveInt("How many users are currently affected?");
+    switch (choice) 
+    {
+        case 1: 
+            AddTicket();
+            break;
 
-Console.WriteLine("Is production down? Y/N");
-string? productionDown = Console.ReadLine();
+        case 2:  
+            return;
 
-if (string.Equals(productionDown, "Y", StringComparison.OrdinalIgnoreCase))
-{
-    Console.WriteLine($"[P1]: {title} - {numberOfUsers} have been affected");
-}
-else if (numberOfUsers >= 50)
-{
-    Console.WriteLine($"[P2]: {title} - {numberOfUsers} have been affected");
-}
-else if (numberOfUsers >= 5)
-{
-    Console.WriteLine($"[P3]: {title} - {numberOfUsers} have been affected");
-}
-else
-{
-    Console.WriteLine($"[P4]: {title} - {numberOfUsers} have been affected");
+        default:
+            Console.WriteLine("Invalid option, please enter 1 or 2");
+            break;
+    }
 }
 
 static string ReadRequiredText(string prompt)
@@ -50,5 +49,31 @@ static int ReadPositiveInt(string prompt)
             return numberOfUsers;
         }
         Console.WriteLine("Please enter a whole number greater than 0");
+    }
+}
+
+static void AddTicket() 
+{
+    string title = ReadRequiredText("Please enter a ticket title");
+    int numberOfUsers = ReadPositiveInt("How many users are currently affected?");
+
+    Console.WriteLine("Is production down? Y/N");
+    string? productionDown = Console.ReadLine();
+
+    if (string.Equals(productionDown, "Y", StringComparison.OrdinalIgnoreCase))
+    {
+        Console.WriteLine($"[P1]: {title} - {numberOfUsers} have been affected");
+    }
+    else if (numberOfUsers >= 50)
+    {
+        Console.WriteLine($"[P2]: {title} - {numberOfUsers} have been affected");
+    }
+    else if (numberOfUsers >= 5)
+    {
+        Console.WriteLine($"[P3]: {title} - {numberOfUsers} have been affected");
+    }
+    else
+    {
+        Console.WriteLine($"[P4]: {title} - {numberOfUsers} have been affected");
     }
 }

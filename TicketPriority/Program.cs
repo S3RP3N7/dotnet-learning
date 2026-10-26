@@ -1,26 +1,47 @@
-﻿while (true)
+﻿
+List<string> ticketList = new List<string>();
+
+while (true)
 {
     Console.WriteLine("Menu");
     Console.WriteLine("Please select an option:");
     Console.WriteLine("Option 1: Add Ticket");
-    Console.WriteLine("Option 2: Leave the program");
+    Console.WriteLine("Option 2: List Tickets");
+    Console.WriteLine("Option 3: Leave the program");
     string? option = Console.ReadLine(); 
     int.TryParse(option, out int choice );
 
     switch (choice) 
     {
-        case 1: 
-            AddTicket();
+        case 1:
+            ticketList.Add(AddTicket());
             break;
 
-        case 2:  
+        case 2:
+            if (ticketList.Count == 0)
+            {
+                Console.WriteLine("No Tickets in List");
+            }
+            else 
+            {
+                foreach (var ticket in ticketList)
+                {
+                    Console.WriteLine(ticket);
+                }
+            }
+
+            break;
+
+        case 3:
+            
             return;
 
         default:
-            Console.WriteLine("Invalid option, please enter 1 or 2");
+            Console.WriteLine("Please enter a valid option");
             break;
     }
 }
+
 
 static string ReadRequiredText(string prompt)
 {
@@ -52,28 +73,31 @@ static int ReadPositiveInt(string prompt)
     }
 }
 
-static void AddTicket() 
+static string AddTicket() 
 {
     string title = ReadRequiredText("Please enter a ticket title");
     int numberOfUsers = ReadPositiveInt("How many users are currently affected?");
 
     Console.WriteLine("Is production down? Y/N");
     string? productionDown = Console.ReadLine();
+    string priority;
 
     if (string.Equals(productionDown, "Y", StringComparison.OrdinalIgnoreCase))
     {
-        Console.WriteLine($"[P1]: {title} - {numberOfUsers} have been affected");
+        priority = "P1";
     }
     else if (numberOfUsers >= 50)
     {
-        Console.WriteLine($"[P2]: {title} - {numberOfUsers} have been affected");
+        priority = "P2";
     }
     else if (numberOfUsers >= 5)
     {
-        Console.WriteLine($"[P3]: {title} - {numberOfUsers} have been affected");
+        priority = "P3";
     }
     else
     {
-        Console.WriteLine($"[P4]: {title} - {numberOfUsers} have been affected");
+        priority = "P4";
     }
+
+    return $"[{priority}]: {title} - {numberOfUsers} affected";
 }

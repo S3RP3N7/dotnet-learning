@@ -1,5 +1,8 @@
 ﻿
-List<string> ticketList = new List<string>();
+
+using TicketPriority;
+
+List<Ticket> ticketList = new List<Ticket>();
 
 while (true)
 {
@@ -8,10 +11,10 @@ while (true)
     Console.WriteLine("Option 1: Add Ticket");
     Console.WriteLine("Option 2: List Tickets");
     Console.WriteLine("Option 3: Leave the program");
-    string? option = Console.ReadLine(); 
-    int.TryParse(option, out int choice );
+    string? option = Console.ReadLine();
+    int.TryParse(option, out int choice);
 
-    switch (choice) 
+    switch (choice)
     {
         case 1:
             ticketList.Add(AddTicket());
@@ -22,18 +25,18 @@ while (true)
             {
                 Console.WriteLine("No Tickets in List");
             }
-            else 
+            else
             {
                 foreach (var ticket in ticketList)
                 {
-                    Console.WriteLine(ticket);
+                    Console.WriteLine($"[{ticket.Priority}]: {ticket.Title} - {ticket.UsersAffected} affected");
                 }
             }
 
             break;
 
         case 3:
-            
+
             return;
 
         default:
@@ -73,14 +76,15 @@ static int ReadPositiveInt(string prompt)
     }
 }
 
-static string AddTicket() 
+static Ticket AddTicket()
 {
+    Ticket ticket = new Ticket();
     string title = ReadRequiredText("Please enter a ticket title");
     int numberOfUsers = ReadPositiveInt("How many users are currently affected?");
-
     Console.WriteLine("Is production down? Y/N");
     string? productionDown = Console.ReadLine();
     string priority;
+    
 
     if (string.Equals(productionDown, "Y", StringComparison.OrdinalIgnoreCase))
     {
@@ -98,6 +102,8 @@ static string AddTicket()
     {
         priority = "P4";
     }
-
-    return $"[{priority}]: {title} - {numberOfUsers} affected";
+    ticket.Title = title;
+    ticket.UsersAffected = numberOfUsers;
+    ticket.Priority = priority;
+    return ticket;
 }

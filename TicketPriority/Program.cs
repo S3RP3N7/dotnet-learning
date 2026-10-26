@@ -1,6 +1,4 @@
-﻿
-
-using TicketPriority;
+﻿using TicketPriority;
 
 List<Ticket> ticketList = new List<Ticket>();
 
@@ -17,9 +15,11 @@ while (true)
     switch (choice)
     {
         case 1:
-            ticketList.Add(AddTicket());
+            Ticket newTicket = AddTicket();
+            newTicket.Id = ticketList.Count + 1;
+            ticketList.Add(newTicket);
             break;
-
+            
         case 2:
             if (ticketList.Count == 0)
             {
@@ -83,24 +83,24 @@ static Ticket AddTicket()
     int numberOfUsers = ReadPositiveInt("How many users are currently affected?");
     Console.WriteLine("Is production down? Y/N");
     string? productionDown = Console.ReadLine();
-    string priority;
+    Priority priority;
     
 
     if (string.Equals(productionDown, "Y", StringComparison.OrdinalIgnoreCase))
     {
-        priority = "P1";
+        priority = Priority.P1;
     }
     else if (numberOfUsers >= 50)
     {
-        priority = "P2";
+        priority = Priority.P2;
     }
     else if (numberOfUsers >= 5)
     {
-        priority = "P3";
+        priority = Priority.P3;
     }
     else
     {
-        priority = "P4";
+        priority = Priority.P4;
     }
     ticket.Title = title;
     ticket.UsersAffected = numberOfUsers;

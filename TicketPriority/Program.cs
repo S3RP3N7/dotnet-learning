@@ -1,4 +1,5 @@
-﻿using TicketPriority;
+﻿
+using TicketPriority;
 
 List<Ticket> ticketList = new List<Ticket>();
 
@@ -8,18 +9,23 @@ while (true)
     Console.WriteLine("Please select an option:");
     Console.WriteLine("Option 1: Add Ticket");
     Console.WriteLine("Option 2: List Tickets");
-    Console.WriteLine("Option 3: Leave the program");
+    Console.WriteLine("Option 3: Close Ticket");
+    Console.WriteLine("Option 4: Leave the program");
+
     string? option = Console.ReadLine();
     int.TryParse(option, out int choice);
 
     switch (choice)
     {
         case 1:
-            Ticket newTicket = AddTicket();
-            newTicket.Id = ticketList.Count + 1;
-            ticketList.Add(newTicket);
-            break;
-            
+            {
+                Ticket newTicket = AddTicket();
+                newTicket.Id = ticketList.Count + 1;
+                ticketList.Add(newTicket);
+                break;
+
+            }
+
         case 2:
             if (ticketList.Count == 0)
             {
@@ -29,13 +35,30 @@ while (true)
             {
                 foreach (var ticket in ticketList)
                 {
-                    Console.WriteLine($"[{ticket.Priority}]: {ticket.Title} - {ticket.UsersAffected} affected");
+                    Console.WriteLine($"[{ticket.Priority}]: {ticket.Title} - {ticket.UsersAffected} affected, The ticket is: {ticket.Status}");
                 }
             }
 
             break;
 
         case 3:
+            {
+                int id = ReadPositiveInt("Which ticket would you like to close");
+                Ticket? found = ticketList.FirstOrDefault(t => t.Id == id);
+
+                if (found == null)
+                {
+                    Console.WriteLine("There are no matching tickets with that Id.");
+                }
+                else
+                {
+                    found.Status = TicketStatus.Closed;
+                    Console.WriteLine($"Ticket {found.Id} closed");
+                }
+                break;
+            }
+
+        case 4:
 
             return;
 
@@ -68,9 +91,9 @@ static int ReadPositiveInt(string prompt)
         Console.WriteLine(prompt);
         string? input = Console.ReadLine();
 
-        if (int.TryParse(input, out int numberOfUsers) && numberOfUsers > 0)
+        if (int.TryParse(input, out int value) && value > 0)
         {
-            return numberOfUsers;
+            return value;
         }
         Console.WriteLine("Please enter a whole number greater than 0");
     }
@@ -84,7 +107,7 @@ static Ticket AddTicket()
     Console.WriteLine("Is production down? Y/N");
     string? productionDown = Console.ReadLine();
     Priority priority;
-    
+
 
     if (string.Equals(productionDown, "Y", StringComparison.OrdinalIgnoreCase))
     {
@@ -105,5 +128,7 @@ static Ticket AddTicket()
     ticket.Title = title;
     ticket.UsersAffected = numberOfUsers;
     ticket.Priority = priority;
+
     return ticket;
 }
+

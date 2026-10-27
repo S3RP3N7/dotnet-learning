@@ -12,6 +12,6 @@ namespace TicketPriority
         public string? Title { get; set; }
         public int UsersAffected { get; set; }
         public Priority Priority { get; set; }
-        public string? Status { get; set;  }
+        public TicketStatus Status { get; set;  }
     }
 }

@@ -27,19 +27,21 @@ while (true)
             }
 
         case 2:
-            if (ticketList.Count == 0)
             {
-                Console.WriteLine("No Tickets in List");
-            }
-            else
-            {
-                foreach (var ticket in ticketList)
+                if (ticketList.Count == 0)
                 {
-                    Console.WriteLine($"[{ticket.Priority}]: {ticket.Title} - {ticket.UsersAffected} affected, The ticket is: {ticket.Status}");
+                    Console.WriteLine("No Tickets in List");
                 }
-            }
+                else
+                {
+                    foreach (var ticket in ticketList)
+                    {
+                        Console.WriteLine($"[{ticket.Priority}]: {ticket.Title} - {ticket.UsersAffected} affected, The ticket is: {ticket.Status}");
+                    }
+                }
 
-            break;
+                break;
+            }
 
         case 3:
             {
@@ -52,6 +54,11 @@ while (true)
                 }
                 else
                 {
+                    if (found.Status == TicketStatus.Closed)
+                    {
+                        Console.WriteLine($"{found.Id} is already in a closed state");
+                    }
+
                     found.Status = TicketStatus.Closed;
                     Console.WriteLine($"Ticket {found.Id} closed");
                 }
@@ -99,17 +106,36 @@ static int ReadPositiveInt(string prompt)
     }
 }
 
+static bool ReadYesNo(string prompt)
+{
+    while (true) 
+    {
+        Console.WriteLine(prompt);
+        string? input = Console.ReadLine();
+        if (string.Equals(input, "Y", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        if (string.Equals(input, "N", StringComparison.OrdinalIgnoreCase)) 
+        {
+            return false;
+        }
+        Console.WriteLine("Please enter Y or N");
+
+    }
+}
+
 static Ticket AddTicket()
 {
     Ticket ticket = new Ticket();
     string title = ReadRequiredText("Please enter a ticket title");
     int numberOfUsers = ReadPositiveInt("How many users are currently affected?");
     Console.WriteLine("Is production down? Y/N");
-    string? productionDown = Console.ReadLine();
+    bool productionDown = ReadYesNo("Is production down? Y/N");
     Priority priority;
 
 
-    if (string.Equals(productionDown, "Y", StringComparison.OrdinalIgnoreCase))
+    if (productionDown)
     {
         priority = Priority.P1;
     }
@@ -131,4 +157,5 @@ static Ticket AddTicket()
 
     return ticket;
 }
+
 

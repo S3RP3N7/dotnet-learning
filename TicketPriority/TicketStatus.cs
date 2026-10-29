@@ -7,9 +7,10 @@ namespace TicketPriority
     internal enum TicketStatus
     {
         Open,
-        Closed,
         InProgress,
         Resolved,
+        Closed,
+        
         
     }
 }

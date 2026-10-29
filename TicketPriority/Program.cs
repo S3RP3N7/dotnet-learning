@@ -10,7 +10,8 @@ while (true)
     Console.WriteLine("Option 1: Add Ticket");
     Console.WriteLine("Option 2: List Tickets");
     Console.WriteLine("Option 3: Close Ticket");
-    Console.WriteLine("Option 4: Leave the program");
+    Console.WriteLine("Option 4: See Reports");
+    Console.WriteLine("Option 5: Leave the program");
 
     string? option = Console.ReadLine();
     int.TryParse(option, out int choice);
@@ -58,21 +59,28 @@ while (true)
                     {
                         Console.WriteLine($"{found.Id} is already in a closed state");
                     }
-
-                    found.Status = TicketStatus.Closed;
-                    Console.WriteLine($"Ticket {found.Id} closed");
+                    else
+                    {
+                        found.Status = TicketStatus.Closed;
+                        Console.WriteLine($"Ticket {found.Id} closed");
+                    }
                 }
                 break;
             }
+        case 4: 
+            {
+                Reports(ticketList);
+                break;
+            }
 
-        case 4:
+        case 5:
 
-            return;
+                return;
 
-        default:
-            Console.WriteLine("Please enter a valid option");
-            break;
-    }
+            default:
+                Console.WriteLine("Please enter a valid option");
+                break;
+            }
 }
 
 
@@ -130,7 +138,6 @@ static Ticket AddTicket()
     Ticket ticket = new Ticket();
     string title = ReadRequiredText("Please enter a ticket title");
     int numberOfUsers = ReadPositiveInt("How many users are currently affected?");
-    Console.WriteLine("Is production down? Y/N");
     bool productionDown = ReadYesNo("Is production down? Y/N");
     Priority priority;
 
@@ -157,5 +164,13 @@ static Ticket AddTicket()
 
     return ticket;
 }
+
+static void Reports(List<Ticket> ticketList) 
+{
+    int openCount = ticketList.Count(t => t.Status == TicketStatus.Open);
+    Console.WriteLine($"Open Tickets: {openCount}");
+}
+
+
 
 

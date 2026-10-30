@@ -67,7 +67,7 @@ while (true)
                 }
                 break;
             }
-        case 4: 
+        case 4:
             {
                 Reports(ticketList);
                 break;
@@ -75,12 +75,12 @@ while (true)
 
         case 5:
 
-                return;
+            return;
 
-            default:
-                Console.WriteLine("Please enter a valid option");
-                break;
-            }
+        default:
+            Console.WriteLine("Please enter a valid option");
+            break;
+    }
 }
 
 
@@ -116,7 +116,7 @@ static int ReadPositiveInt(string prompt)
 
 static bool ReadYesNo(string prompt)
 {
-    while (true) 
+    while (true)
     {
         Console.WriteLine(prompt);
         string? input = Console.ReadLine();
@@ -124,7 +124,7 @@ static bool ReadYesNo(string prompt)
         {
             return true;
         }
-        if (string.Equals(input, "N", StringComparison.OrdinalIgnoreCase)) 
+        if (string.Equals(input, "N", StringComparison.OrdinalIgnoreCase))
         {
             return false;
         }
@@ -165,10 +165,23 @@ static Ticket AddTicket()
     return ticket;
 }
 
-static void Reports(List<Ticket> ticketList) 
+static void Reports(List<Ticket> ticketList)
 {
-    int openCount = ticketList.Count(t => t.Status == TicketStatus.Open);
-    Console.WriteLine($"Open Tickets: {openCount}");
+    if (ticketList.Count == 0)
+    {
+        Console.WriteLine("There are 0 Tickets in the List");
+    }
+    else
+    {
+        int openCount = ticketList.Count(t => t.Status == TicketStatus.Open);
+        Console.WriteLine($"Open Tickets: {openCount}");
+        var groups = ticketList.GroupBy(t => t.Priority);
+
+        foreach (var group in groups)
+        {
+            Console.WriteLine($"{group.Key}: {group.Count()} ticket");
+        }
+    }
 }
 
 

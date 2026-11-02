@@ -1,7 +1,8 @@
 ﻿
 using TicketPriority;
+using System.Text.Json;
 
-List<Ticket> ticketList = new List<Ticket>();
+List<Ticket> ticketList = LoadTickets();
 
 while (true)
 {
@@ -74,8 +75,11 @@ while (true)
             }
 
         case 5:
+            {
+                SaveTickets(ticketList);
+                return;
+            }
 
-            return;
 
         default:
             Console.WriteLine("Please enter a valid option");
@@ -179,10 +183,43 @@ static void Reports(List<Ticket> ticketList)
 
         foreach (var group in groups)
         {
-            Console.WriteLine($"{group.Key}: {group.Count()} ticket");
+            if (group.Count() > 1)
+            {
+                Console.WriteLine($"{group.Key}: {group.Count()} tickets");
+            }
+            else
+            {
+                Console.WriteLine($"{group.Key}: {group.Count()} ticket");
+            }
         }
     }
 }
+
+static List<Ticket> LoadTickets()
+{
+    if (!File.Exists("tickets.json"))
+    {
+        return new List<Ticket>();
+    }
+
+    string json = File.ReadAllText("tickets.json");
+    List<Ticket>? tickets = JsonSerializer.Deserialize<List<Ticket>>(json);
+    if (tickets is null)
+    {
+        return new List<Ticket>();
+    }
+    else
+    {
+        return tickets;
+    }
+}
+static void SaveTickets(List<Ticket> tickets)
+{
+    string json = JsonSerializer.Serialize(tickets);
+    File.WriteAllText("tickets.json", json);
+}
+
+
 
 
 

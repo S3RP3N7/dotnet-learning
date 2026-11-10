@@ -33,13 +33,15 @@ while (true)
 
         case 2:
             {
-                if (ticketList.Count == 0)
+                List<Ticket> dbTickets = GetTickets(connectionString);
+
+                if (dbTickets.Count == 0)
                 {
                     Console.WriteLine("No Tickets in List");
                 }
                 else
                 {
-                    foreach (var ticket in ticketList)
+                    foreach (var ticket in dbTickets)
                     {
                         Console.WriteLine($"[{ticket.Priority}]: {ticket.Title} - {ticket.UsersAffected} affected, The ticket is: {ticket.Status}");
                     }
@@ -222,29 +224,38 @@ static void SaveTickets(List<Ticket> tickets)
     File.WriteAllText("tickets.json", json);
 }
 
-static void GetTickets(string connectionString)
+static List<Ticket> GetTickets(string connectionString)
 {
+    List<Ticket> tickets = new List<Ticket>();
+
     using (SqlConnection connection = new SqlConnection(connectionString))
     {
         connection.Open();
 
-        string sql = "SELECT Id, Title, Priority, Status from Tickets";
+        string sql = "SELECT Id, Title, UsersAffected, [Priority], [Status] FROM Tickets";
 
         using (SqlCommand command = new SqlCommand(sql, connection))
         using (SqlDataReader reader = command.ExecuteReader())
         {
             while (reader.Read())
             {
-                int id = reader.GetInt32(0);
-                string title = reader.GetString(1);
-                int priority = reader.GetInt32(2);
-                int status = reader.GetInt32(3);
+                Ticket ticket = new Ticket
+                {
+                    Id = reader.GetInt32(0),
+                    Title = reader.GetString(1),
+                    UsersAffected = reader.GetInt32(2),
+                    Priority = (Priority)reader.GetInt32(3),
+                    Status = (TicketStatus)reader.GetInt32(4)
+                };
 
-                Console.WriteLine($"{id}, {title}, {priority}, {status}");
+                tickets.Add(ticket);
             }
         }
     }
+
+    return tickets;
 }
+
 static void InsertTickets(string connectionString)
 {
     using (SqlConnection connection = new SqlConnection(connectionString))
@@ -280,7 +291,7 @@ static bool CloseTicket(string connectionString, int id)
 
             return rowsChanged > 0;
         }
-        
+
     }
 }
 

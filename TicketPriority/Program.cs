@@ -1,7 +1,9 @@
 ﻿
-using TicketPriority;
-using System.Text.Json;
 using Microsoft.Data.SqlClient;
+
+using System.Text.Json;
+
+using TicketPriority;
 
 List<Ticket> ticketList = LoadTickets();
 string connectionString =
@@ -25,10 +27,9 @@ while (true)
         case 1:
             {
                 Ticket newTicket = AddTicket();
-                newTicket.Id = ticketList.Count + 1;
-                ticketList.Add(newTicket);
+                InsertTicket(connectionString, newTicket);
+                Console.WriteLine("Ticket added.");
                 break;
-
             }
 
         case 2:
@@ -256,25 +257,24 @@ static List<Ticket> GetTickets(string connectionString)
     return tickets;
 }
 
-static void InsertTickets(string connectionString)
+static void InsertTicket(string connectionString, Ticket ticket)
 {
     using (SqlConnection connection = new SqlConnection(connectionString))
     {
-
         connection.Open();
+
         string insertSQL =
-            "insert Into Tickets (Title, UsersAffected, [Priority], [Status])" +
-             " Values (@title, @users, @priority, @status)";
+            "INSERT INTO Tickets (Title, UsersAffected, [Priority], [Status]) " +
+            "VALUES (@title, @users, @priority, @status)";
 
         using (SqlCommand insert = new SqlCommand(insertSQL, connection))
         {
-            insert.Parameters.AddWithValue("@title", "Printer jammed");
-            insert.Parameters.AddWithValue("@priority", 3);
-            insert.Parameters.AddWithValue("@status", 0);
-            insert.Parameters.AddWithValue("@users", 1);
+            insert.Parameters.AddWithValue("@title", ticket.Title);
+            insert.Parameters.AddWithValue("@users", ticket.UsersAffected);
+            insert.Parameters.AddWithValue("@priority", (int)ticket.Priority);
+            insert.Parameters.AddWithValue("@status", (int)ticket.Status);
 
-            int rowsAffected = insert.ExecuteNonQuery();
-            Console.WriteLine($"{rowsAffected} row(s) inserted");
+            insert.ExecuteNonQuery();
         }
     }
 }

@@ -190,30 +190,6 @@ static void Reports(List<Ticket> ticketList)
     }
 }
 
-static List<Ticket> LoadTickets()
-{
-    if (!File.Exists("tickets.json"))
-    {
-        return new List<Ticket>();
-    }
-
-    string json = File.ReadAllText("tickets.json");
-    List<Ticket>? tickets = JsonSerializer.Deserialize<List<Ticket>>(json);
-    if (tickets is null)
-    {
-        return new List<Ticket>();
-    }
-    else
-    {
-        return tickets;
-    }
-}
-static void SaveTickets(List<Ticket> tickets)
-{
-    string json = JsonSerializer.Serialize(tickets);
-    File.WriteAllText("tickets.json", json);
-}
-
 static List<Ticket> GetTickets(string connectionString)
 {
     List<Ticket> tickets = new List<Ticket>();

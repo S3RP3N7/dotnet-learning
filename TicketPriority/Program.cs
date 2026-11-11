@@ -59,7 +59,7 @@ while (true)
                 }
                 else
                 {
-                    Console.WriteLine("There are no matching tickets with that Id.");
+                    Console.WriteLine("No Open Ticket found with that Id.");
                 }
                 break;
             }
@@ -248,7 +248,7 @@ static bool CloseTicket(string connectionString, int id)
     using (SqlConnection connection = new SqlConnection(connectionString))
     {
         connection.Open();
-        string updateSQL = "UPDATE Tickets SET [Status] = 3 WHERE Id = @id";
+        string updateSQL = "UPDATE Tickets SET [Status] = 3 WHERE Id = @id AND [Status] <> 3";
         using (SqlCommand update = new SqlCommand(updateSQL, connection))
         {
             update.Parameters.AddWithValue("@id", id);

@@ -1,11 +1,8 @@
 ﻿
 using Microsoft.Data.SqlClient;
 
-using System.Text.Json;
-
 using TicketPriority;
 
-List<Ticket> ticketList = LoadTickets();
 string connectionString =
     "Server=localhost\\SQLEXPRESS;Database=Sandbox;Trusted_Connection=True;TrustServerCertificate=True;";
 
@@ -53,38 +50,30 @@ while (true)
 
         case 3:
             {
-                int id = ReadPositiveInt("Which ticket would you like to close");
-                Ticket? found = ticketList.FirstOrDefault(t => t.Id == id);
+                int id = ReadPositiveInt("Which ticket would you like to close?");
+                bool closed = CloseTicket(connectionString, id);
 
-                if (found == null)
+                if (closed)
                 {
-                    Console.WriteLine("There are no matching tickets with that Id.");
+                    Console.WriteLine($"Ticket {id} closed");
                 }
                 else
                 {
-                    if (found.Status == TicketStatus.Closed)
-                    {
-                        Console.WriteLine($"{found.Id} is already in a closed state");
-                    }
-                    else
-                    {
-                        found.Status = TicketStatus.Closed;
-                        Console.WriteLine($"Ticket {found.Id} closed");
-                    }
+                    Console.WriteLine("There are no matching tickets with that Id.");
                 }
                 break;
             }
         case 4:
             {
-                Reports(ticketList);
+                Reports(GetTickets(connectionString));
                 break;
             }
 
         case 5:
             {
-                SaveTickets(ticketList);
                 return;
             }
+
 
 
         default:

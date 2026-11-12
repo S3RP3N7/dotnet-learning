@@ -24,7 +24,7 @@ while (true)
         case 1:
             {
                 Ticket newTicket = AddTicket();
-                InsertTicket(connectionString, newTicket);
+                InsertTicketEF(newTicket);
                 Console.WriteLine("Ticket added.");
                 break;
             }
@@ -189,28 +189,6 @@ static void Reports(List<Ticket> ticketList)
         }
     }
 }
-
-static void InsertTicket(string connectionString, Ticket ticket)
-{
-    using (SqlConnection connection = new SqlConnection(connectionString))
-    {
-        connection.Open();
-
-        string insertSQL =
-            "INSERT INTO Tickets (Title, UsersAffected, [Priority], [Status]) " +
-            "VALUES (@title, @users, @priority, @status)";
-
-        using (SqlCommand insert = new SqlCommand(insertSQL, connection))
-        {
-            insert.Parameters.AddWithValue("@title", ticket.Title);
-            insert.Parameters.AddWithValue("@users", ticket.UsersAffected);
-            insert.Parameters.AddWithValue("@priority", (int)ticket.Priority);
-            insert.Parameters.AddWithValue("@status", (int)ticket.Status);
-
-            insert.ExecuteNonQuery();
-        }
-    }
-}
 static bool CloseTicket(string connectionString, int id)
 {
     using (SqlConnection connection = new SqlConnection(connectionString))
@@ -235,4 +213,11 @@ static List<Ticket> GetTicketsEF()
         return context.Tickets.ToList();
     }
 }
-
+static void InsertTicketEF(Ticket ticket)
+{
+    using (TicketContext context = new TicketContext())
+    {
+        context.Tickets.Add(ticket);
+        context.SaveChanges();
+    }
+}

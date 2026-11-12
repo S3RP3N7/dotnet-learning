@@ -1,10 +1,4 @@
-﻿
-using Microsoft.Data.SqlClient;
-
-using TicketPriority;
-
-string connectionString =
-    "Server=localhost\\SQLEXPRESS;Database=Sandbox;Trusted_Connection=True;TrustServerCertificate=True;";
+﻿using TicketPriority;
 
 while (true)
 {
@@ -51,7 +45,7 @@ while (true)
         case 3:
             {
                 int id = ReadPositiveInt("Which ticket would you like to close?");
-                bool closed = CloseTicket(connectionString, id);
+                bool closed = CloseTicketEF(id);
 
                 if (closed)
                 {
@@ -189,23 +183,6 @@ static void Reports(List<Ticket> ticketList)
         }
     }
 }
-static bool CloseTicket(string connectionString, int id)
-{
-    using (SqlConnection connection = new SqlConnection(connectionString))
-    {
-        connection.Open();
-        string updateSQL = "UPDATE Tickets SET [Status] = 3 WHERE Id = @id AND [Status] <> 3";
-        using (SqlCommand update = new SqlCommand(updateSQL, connection))
-        {
-            update.Parameters.AddWithValue("@id", id);
-            int rowsChanged = update.ExecuteNonQuery();
-
-            return rowsChanged > 0;
-        }
-
-    }
-}
-
 static List<Ticket> GetTicketsEF()
 {
     using (TicketContext context = new TicketContext())
@@ -219,5 +196,20 @@ static void InsertTicketEF(Ticket ticket)
     {
         context.Tickets.Add(ticket);
         context.SaveChanges();
+    }
+}
+static bool CloseTicketEF(int id)
+{
+    using (TicketContext context = new TicketContext())
+    {
+        Ticket? ticket = context.Tickets.FirstOrDefault(t => t.Id == id && t.Status != TicketStatus.Closed);
+
+        if (ticket == null)
+        {
+            return false;
+        }
+        ticket.Status = TicketStatus.Closed;
+        context.SaveChanges();
+        return true;
     }
 }

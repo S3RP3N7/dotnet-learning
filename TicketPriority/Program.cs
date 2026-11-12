@@ -31,7 +31,7 @@ while (true)
 
         case 2:
             {
-                List<Ticket> dbTickets = GetTickets(connectionString);
+                List<Ticket> dbTickets = GetTicketsEF();
 
                 if (dbTickets.Count == 0)
                 {
@@ -65,7 +65,7 @@ while (true)
             }
         case 4:
             {
-                Reports(GetTickets(connectionString));
+                Reports(GetTicketsEF());
                 break;
             }
 
@@ -190,38 +190,6 @@ static void Reports(List<Ticket> ticketList)
     }
 }
 
-static List<Ticket> GetTickets(string connectionString)
-{
-    List<Ticket> tickets = new List<Ticket>();
-
-    using (SqlConnection connection = new SqlConnection(connectionString))
-    {
-        connection.Open();
-
-        string sql = "SELECT Id, Title, UsersAffected, [Priority], [Status] FROM Tickets";
-
-        using (SqlCommand command = new SqlCommand(sql, connection))
-        using (SqlDataReader reader = command.ExecuteReader())
-        {
-            while (reader.Read())
-            {
-                Ticket ticket = new Ticket
-                {
-                    Id = reader.GetInt32(0),
-                    Title = reader.GetString(1),
-                    UsersAffected = reader.GetInt32(2),
-                    Priority = (Priority)reader.GetInt32(3),
-                    Status = (TicketStatus)reader.GetInt32(4)
-                };
-
-                tickets.Add(ticket);
-            }
-        }
-    }
-
-    return tickets;
-}
-
 static void InsertTicket(string connectionString, Ticket ticket)
 {
     using (SqlConnection connection = new SqlConnection(connectionString))
@@ -260,4 +228,11 @@ static bool CloseTicket(string connectionString, int id)
     }
 }
 
+static List<Ticket> GetTicketsEF()
+{
+    using (TicketContext context = new TicketContext())
+    {
+        return context.Tickets.ToList();
+    }
+}
 

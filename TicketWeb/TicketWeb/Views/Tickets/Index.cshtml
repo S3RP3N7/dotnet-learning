@@ -1,0 +1,31 @@
+﻿@model List<TicketWeb.Models.Ticket>
+@{
+    ViewData["Title"] = "Tickets";
+}
+
+<h1>Tickets</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Users</th>
+            <th>Priority</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>@ticket.Id</td>
+                <td>@ticket.Title</td>
+                <td>@ticket.UsersAffected</td>
+                <td>@ticket.Priority</td>
+                <td>@ticket.Status</td>
+            </tr>
+        }
+    </tbody>
+
+</table>

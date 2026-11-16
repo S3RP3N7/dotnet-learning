@@ -13,5 +13,9 @@ namespace TicketWeb.Controllers
                 return View(tickets);
             }
         }
+        public IActionResult Create() 
+        {
+            return View();
+        }
     }
 }

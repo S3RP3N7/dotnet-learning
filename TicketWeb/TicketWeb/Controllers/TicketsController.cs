@@ -5,7 +5,7 @@ namespace TicketWeb.Controllers
 {
     public class TicketsController : Controller
     {
-        public IActionResult Index() 
+        public IActionResult Index()
         {
             using (TicketContext context = new TicketContext())
             {
@@ -13,9 +13,40 @@ namespace TicketWeb.Controllers
                 return View(tickets);
             }
         }
-        public IActionResult Create() 
+        [HttpGet]
+        public IActionResult Create()
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Create(Ticket ticket)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(ticket);
+            }
+
+            if (ticket.UsersAffected >= 50)
+            {
+                ticket.Priority = Priority.P2;
+            }
+            else if (ticket.UsersAffected >= 5)
+            {
+                ticket.Priority = Priority.P3;
+            }
+            else
+            {
+                ticket.Priority = Priority.P4;
+            }
+
+            using (TicketContext context = new TicketContext())
+            {
+                context.Tickets.Add(ticket);
+                context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }
     }
+
 }

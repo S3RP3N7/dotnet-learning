@@ -19,18 +19,26 @@ namespace TicketWeb.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Ticket ticket)
+        public IActionResult Create(CreateTicketViewModel form)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) 
             {
-                return View(ticket);
+                return View(form);
             }
-
-            if (ticket.UsersAffected >= 50)
+            Ticket ticket = new Ticket
+            {
+                Title = form.Title,
+                UsersAffected = form.UsersAffected,
+            };
+            if (form.ProductionDown)
+            {
+                ticket.Priority = Priority.P1;
+            }
+            else if (form.UsersAffected >= 50)
             {
                 ticket.Priority = Priority.P2;
             }
-            else if (ticket.UsersAffected >= 5)
+            else if (form.UsersAffected >= 5)
             {
                 ticket.Priority = Priority.P3;
             }
@@ -48,5 +56,6 @@ namespace TicketWeb.Controllers
             return RedirectToAction("Index");
         }
     }
-
 }
+    
+

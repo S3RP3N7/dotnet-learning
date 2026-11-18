@@ -55,6 +55,20 @@ namespace TicketWeb.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public IActionResult Close(int id) 
+        {
+            using (TicketContext context = new TicketContext()) 
+            {
+                Ticket? ticket = context.Tickets.FirstOrDefault(t => t.Id == id && t.Status != TicketStatus.Closed);
+                if (ticket != null)
+                {
+                    ticket.Status = TicketStatus.Closed;
+                    context.SaveChanges();
+                }
+            }
+            return RedirectToAction("Index");
+        }
     }
 }
     

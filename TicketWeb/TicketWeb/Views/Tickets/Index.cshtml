@@ -13,6 +13,7 @@
             <th>Users</th>
             <th>Priority</th>
             <th>Status</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -24,6 +25,15 @@
                 <td>@ticket.UsersAffected</td>
                 <td>@ticket.Priority</td>
                 <td>@ticket.Status</td>
+                <td>
+                    @if (ticket.Status != TicketStatus.Closed)
+                    {
+                        <form asp-action="Close" method="post">
+                            <input type="hidden" name="id" value="@ticket.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Close</button>
+                        </form>
+                    }
+                </td>
             </tr>
         }
     </tbody>

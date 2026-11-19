@@ -38,22 +38,7 @@ namespace TicketWeb.Controllers
                 UsersAffected = form.UsersAffected
             };
 
-            if (form.ProductionDown)
-            {
-                ticket.Priority = Priority.P1;
-            }
-            else if (form.UsersAffected >= 50)
-            {
-                ticket.Priority = Priority.P2;
-            }
-            else if (form.UsersAffected >= 5)
-            {
-                ticket.Priority = Priority.P3;
-            }
-            else
-            {
-                ticket.Priority = Priority.P4;
-            }
+            ticket.Priority = PriorityCalculator.Calculate(form.UsersAffected, form.ProductionDown);
 
             _context.Tickets.Add(ticket);
             _context.SaveChanges();

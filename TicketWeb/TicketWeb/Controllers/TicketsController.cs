@@ -5,19 +5,25 @@ namespace TicketWeb.Controllers
 {
     public class TicketsController : Controller
     {
+        private readonly TicketContext _context;
+
+        public TicketsController(TicketContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            using (TicketContext context = new TicketContext())
-            {
-                List<Ticket> tickets = context.Tickets.ToList();
-                return View(tickets);
-            }
+            List<Ticket> tickets = _context.Tickets.ToList();
+            return View(tickets);
         }
+
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Create(CreateTicketViewModel form)
         {
@@ -25,11 +31,13 @@ namespace TicketWeb.Controllers
             {
                 return View(form);
             }
+
             Ticket ticket = new Ticket
             {
                 Title = form.Title,
-                UsersAffected = form.UsersAffected,
+                UsersAffected = form.UsersAffected
             };
+
             if (form.ProductionDown)
             {
                 ticket.Priority = Priority.P1;
@@ -47,43 +55,40 @@ namespace TicketWeb.Controllers
                 ticket.Priority = Priority.P4;
             }
 
-            using (TicketContext context = new TicketContext())
+            _context.Tickets.Add(ticket);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Close(int id)
+        {
+            Ticket? ticket = _context.Tickets
+                .FirstOrDefault(t => t.Id == id && t.Status != TicketStatus.Closed);
+
+            if (ticket != null)
             {
-                context.Tickets.Add(ticket);
-                context.SaveChanges();
+                ticket.Status = TicketStatus.Closed;
+                _context.SaveChanges();
             }
 
             return RedirectToAction("Index");
         }
-        [HttpPost]
-        public IActionResult Close(int id)
-        {
-            using (TicketContext context = new TicketContext())
-            {
-                Ticket? ticket = context.Tickets.FirstOrDefault(t => t.Id == id && t.Status != TicketStatus.Closed);
-                if (ticket != null)
-                {
-                    ticket.Status = TicketStatus.Closed;
-                    context.SaveChanges();
-                }
-            }
-            return RedirectToAction("Index");
-        }
+
         [HttpPost]
         public IActionResult ReOpen(int id)
         {
-            using (TicketContext context = new TicketContext())
+            Ticket? ticket = _context.Tickets
+                .FirstOrDefault(t => t.Id == id && t.Status == TicketStatus.Closed);
+
+            if (ticket != null)
             {
-                Ticket? ticket = context.Tickets.FirstOrDefault(t => t.Id == id && t.Status == TicketStatus.Open);
-                if (ticket != null)
-                {
-                    ticket.Status = TicketStatus.Open;
-                    context.SaveChanges();
-                }
+                ticket.Status = TicketStatus.Open;
+                _context.SaveChanges();
             }
+
             return RedirectToAction("Index");
         }
     }
 }
-
-

@@ -2,14 +2,12 @@
 
 namespace TicketWeb.Models
 {
-    internal class TicketContext : DbContext
+    public class TicketContext : DbContext
     {
-        public DbSet<Ticket> Tickets => Set<Ticket>();
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
+        public TicketContext(DbContextOptions<TicketContext> options) : base(options)
         {
-            optionBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=Sandbox;Trusted_Connection=True;TrustServerCertificate=True;");
         }
-    }
 
+        public DbSet<Ticket> Tickets => Set<Ticket>();
+    }
 }

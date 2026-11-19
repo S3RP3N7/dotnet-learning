@@ -33,6 +33,13 @@
                             <button type="submit" class="btn btn-sm btn-outline-secondary">Close</button>
                         </form>
                     }
+                    else
+                    {
+                        <form asp-action="ReOpen" method="post">
+                            <input type="hidden" name="id" value="@ticket.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">ReOpen</button>
+                        </form>
+                    }
                 </td>
             </tr>
         }

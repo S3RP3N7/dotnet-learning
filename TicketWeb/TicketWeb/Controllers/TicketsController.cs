@@ -21,7 +21,7 @@ namespace TicketWeb.Controllers
         [HttpPost]
         public IActionResult Create(CreateTicketViewModel form)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return View(form);
             }
@@ -56,9 +56,9 @@ namespace TicketWeb.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public IActionResult Close(int id) 
+        public IActionResult Close(int id)
         {
-            using (TicketContext context = new TicketContext()) 
+            using (TicketContext context = new TicketContext())
             {
                 Ticket? ticket = context.Tickets.FirstOrDefault(t => t.Id == id && t.Status != TicketStatus.Closed);
                 if (ticket != null)
@@ -69,7 +69,21 @@ namespace TicketWeb.Controllers
             }
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public IActionResult ReOpen(int id)
+        {
+            using (TicketContext context = new TicketContext())
+            {
+                Ticket? ticket = context.Tickets.FirstOrDefault(t => t.Id == id && t.Status == TicketStatus.Open);
+                if (ticket != null)
+                {
+                    ticket.Status = TicketStatus.Open;
+                    context.SaveChanges();
+                }
+            }
+            return RedirectToAction("Index");
+        }
     }
 }
-    
+
 
